@@ -9,13 +9,14 @@ import {
 
 import Users from "./users/pages/Users";
 import NewFeed from "./feeds/pages/NewFeed";
+import Feeds from "./feeds/pages/Feeds";
 
 const App = () => {
   return (
     <Router>
       <Switch>
         <Route path="/" exact>
-          <Users />
+          <Feeds />
         </Route>
         <Route path="/feeds/new" exact>
           <NewFeed />
