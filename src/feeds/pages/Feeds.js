@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import FeedsList from "../components/FeedsList";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 const FEEDS = [
   {
     id: "f1",
@@ -23,7 +24,26 @@ const FEEDS = [
   },
 ];
 const Feeds = () => {
-  return <FeedsList items={FEEDS} />;
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [loadedFeeds, setLoadedFeeds] = useState();
+
+  useEffect(() => {
+    const fetchFeeds = async () => {
+      try {
+        const responseData = await sendRequest(
+          process.env.REACT_APP_BACKEND_URL + "/posts"
+        );
+        setLoadedFeeds(responseData.feeds);
+      } catch (err) {}
+    };
+    fetchFeeds();
+    if (!loadedFeeds) {
+      setLoadedFeeds(FEEDS);
+    }
+    console.log(loadedFeeds);
+  }, [sendRequest]);
+
+  return <>{!isLoading && loadedFeeds && <FeedsList items={loadedFeeds} />}</>;
 };
 
 export default Feeds;

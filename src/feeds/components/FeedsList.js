@@ -1,13 +1,15 @@
 import React from "react";
 
 import FeedItem from "./FeedItem";
+import Card from "../../shared/components/UIElements/Card";
 import "./FeedsList.css";
 const FeedsList = (props) => {
-  if (props.items.length === 0) {
+  if (props.items.length === 0 || !props.items) {
+    console.log("here" + props.items);
     return (
-      <div className="center">
+      <Card className="center">
         <h2>No feeds found</h2>
-      </div>
+      </Card>
     );
   }
 

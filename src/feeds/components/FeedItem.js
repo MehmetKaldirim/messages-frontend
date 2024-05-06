@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import Image from "../../shared/UIElements/Image";
-import Card from "../../shared/UIElements/Card";
+import Image from "../../shared/components/UIElements/Image";
+import Card from "../../shared/components/UIElements/Card";
 import "./FeedItem.css";
 const FeedItem = (props) => {
   //const date = new Date(props.).toLocaleDateString("en-US");
