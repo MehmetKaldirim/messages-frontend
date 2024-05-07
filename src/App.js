@@ -21,6 +21,9 @@ const App = () => {
           <Route path="/" exact>
             <Feeds />
           </Route>
+          <Route path="/:userId/places" exact>
+            <UserFeeds />
+          </Route>
           <Route path="/feeds/new" exact>
             <NewFeed />
           </Route>
