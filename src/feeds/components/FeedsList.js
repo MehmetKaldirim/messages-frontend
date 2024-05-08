@@ -23,6 +23,7 @@ const FeedsList = (props) => {
           title={feed.title}
           content={feed.content}
           author={feed.author}
+          authorId={feed.authorId}
           date={feed.date}
         />
       ))}

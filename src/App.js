@@ -11,6 +11,7 @@ import Users from "./users/pages/Users";
 import NewFeed from "./feeds/pages/NewFeed";
 import Feeds from "./feeds/pages/Feeds";
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
+import UserItem from "./users/components/UserItem1";
 
 const App = () => {
   return (
@@ -21,8 +22,11 @@ const App = () => {
           <Route path="/" exact>
             <Feeds />
           </Route>
-          <Route path="/:userId/places" exact>
-            <UserFeeds />
+          <Route path="/users" exact>
+            <Users />
+          </Route>
+          <Route path="/:userId" exact>
+            <UserItem />
           </Route>
           <Route path="/feeds/new" exact>
             <NewFeed />

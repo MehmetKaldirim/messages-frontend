@@ -10,8 +10,8 @@ const FeedItem = (props) => {
     <Card className="single-post">
       <h1>{props.title}</h1>
       <h2>
-        Created by <Link to={`/${props.authorId}/feeds`}>{props.author} </Link>{" "}
-        on {props.date}
+        Created by <Link to={`/${props.authorId}`}>{props.author} </Link> on{" "}
+        {props.date}
       </h2>
       <div className="single-post__image">
         <Image contain imageUrl={props.image} />
