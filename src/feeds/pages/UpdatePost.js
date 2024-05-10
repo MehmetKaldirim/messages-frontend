@@ -52,6 +52,7 @@ const UpdatePost = () => {
   );
 
   const identifiedPost = FEEDS.find((p) => p.id === postId);
+  console.log("here identifiedPost=  " + identifiedPost.title);
 
   useEffect(() => {
     setFormData(
@@ -60,7 +61,7 @@ const UpdatePost = () => {
           value: identifiedPost.title,
           isValid: true,
         },
-        description: {
+        content: {
           value: identifiedPost.content,
           isValid: true,
         },
@@ -97,7 +98,7 @@ const UpdatePost = () => {
         element="input"
         type="text"
         label="Title"
-        validators={VALIDATOR_REQUIRE()}
+        validators={[VALIDATOR_REQUIRE()]}
         errorText="Please enter a valid title"
         onInput={inputHandler}
         initialValue={formState.inputs.title.value}
@@ -114,7 +115,7 @@ const UpdatePost = () => {
         initialValue={formState.inputs.content.value}
         initialValid={formState.inputs.content.isValid}
       />
-      <Button type="submit" disabled={true}>
+      <Button type="submit" disabled={!formState.isValid}>
         UPDATE POST
       </Button>
     </form>
