@@ -19,7 +19,7 @@ const FeedItem = (props) => {
       </div>
       <p>{props.content}</p>
       <div className="post-item__action">
-        <Button to={`/feeds/${props.id}`}>EDIT</Button>
+        <Button to={`/feeds/posts/${props.id}`}>EDIT</Button>
         <Button danger>DELETE</Button>
       </div>
     </Card>
