@@ -12,8 +12,10 @@ import NewPost from "./feeds/pages/NewPost";
 import Feeds from "./feeds/pages/Feeds";
 import UpdatePost from "./feeds/pages/UpdatePost";
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
-import UserItem from "./users/components/UserItem1";
+import SingleUser from "./users/pages/SingleUser";
 import Auth from "./users/pages/Auth";
+import MyFeeds from "./feeds/pages/MyFeeds";
+import Card from "./shared/components/UIElements/Card";
 
 import { AuthContext } from "./shared/context/auth-context";
 
@@ -45,7 +47,11 @@ const App = () => {
         </Route>
 
         <Route path="/feeds/users/:userId">
-          <UserItem />
+          <SingleUser />
+        </Route>
+
+        <Route path="/feeds/:userId/posts" exact>
+          <MyFeeds />
         </Route>
 
         <Redirect to="/" />
@@ -61,7 +67,7 @@ const App = () => {
           <Users />
         </Route>
         <Route path="/feeds/users/:userId">
-          <UserItem />
+          <SingleUser />
         </Route>
 
         <Route path="/auth">
@@ -73,7 +79,12 @@ const App = () => {
   }
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn: isLoggedIn, login: login, logout: logout }}
+      value={{
+        isLoggedIn: isLoggedIn,
+        userId: "u2",
+        login: login,
+        logout: logout,
+      }}
     >
       <Router>
         <MainNavigation />

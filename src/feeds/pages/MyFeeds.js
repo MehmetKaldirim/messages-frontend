@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import FeedsList from "../components/FeedsList";
 import { useHttpClient } from "../../shared/hooks/http-hook";
@@ -32,9 +33,12 @@ const FEEDS = [
     date: "10 May 2023",
   },
 ];
-const Feeds = () => {
+const MyFeeds = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loadedFeeds, setLoadedFeeds] = useState();
+
+  const userId = useParams().userId;
+  const loadedPosts = FEEDS.filter((post) => post.authorId === userId);
 
   useEffect(() => {
     const fetchFeeds = async () => {
@@ -47,7 +51,7 @@ const Feeds = () => {
     };
     fetchFeeds();
     if (!loadedFeeds) {
-      setLoadedFeeds(FEEDS);
+      setLoadedFeeds(loadedPosts);
     }
     console.log(loadedFeeds);
   }, [sendRequest]);
@@ -55,4 +59,4 @@ const Feeds = () => {
   return <>{!isLoading && loadedFeeds && <FeedsList items={loadedFeeds} />}</>;
 };
 
-export default Feeds;
+export default MyFeeds;
