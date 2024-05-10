@@ -8,8 +8,9 @@ import {
 } from "react-router-dom";
 
 import Users from "./users/pages/Users";
-import NewFeed from "./feeds/pages/NewFeed";
+import NewPost from "./feeds/pages/NewPost";
 import Feeds from "./feeds/pages/Feeds";
+import UpdatePost from "./feeds/pages/UpdatePost";
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
 import UserItem from "./users/components/UserItem1";
 
@@ -22,15 +23,21 @@ const App = () => {
           <Route path="/" exact>
             <Feeds />
           </Route>
+          <Route path="/feeds/new" exact>
+            <NewPost />
+          </Route>
+          <Route path="/feeds/:postId">
+            <UpdatePost />
+          </Route>
+
           <Route path="/users" exact>
             <Users />
           </Route>
-          <Route path="/:userId" exact>
+
+          <Route path="/:userId">
             <UserItem />
           </Route>
-          <Route path="/feeds/new" exact>
-            <NewFeed />
-          </Route>
+
           <Redirect to="/" />
         </Switch>
       </main>

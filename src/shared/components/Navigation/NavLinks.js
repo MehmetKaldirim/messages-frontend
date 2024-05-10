@@ -18,11 +18,15 @@ const NavLinks = (props) => {
         </NavLink>
       </li>
       <li>
+        <NavLink to="/feeds/new" exact>
+          ADD POST
+        </NavLink>
+      </li>
+
+      <li>
         <NavLink to="/u1/posts">MY PLACES</NavLink>
       </li>
-      <li>
-        <NavLink to="/posts/new">ADD PLACE</NavLink>
-      </li>
+
       <li>
         <NavLink to="/auth">AUTHENTICATE</NavLink>
       </li>

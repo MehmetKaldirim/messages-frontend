@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import Image from "../../shared/components/UIElements/Image";
 import Card from "../../shared/components/UIElements/Card";
+import Button from "../../shared/components/FormElements/Button";
 import "./FeedItem.css";
 const FeedItem = (props) => {
   //const date = new Date(props.).toLocaleDateString("en-US");
@@ -17,6 +18,10 @@ const FeedItem = (props) => {
         <Image contain imageUrl={props.image} />
       </div>
       <p>{props.content}</p>
+      <div className="post-item__action">
+        <Button to={`/feeds/${props.id}`}>EDIT</Button>
+        <Button danger>DELETE</Button>
+      </div>
     </Card>
   );
 };
