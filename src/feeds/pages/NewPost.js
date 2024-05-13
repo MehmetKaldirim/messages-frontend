@@ -8,6 +8,7 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import { AuthContext } from "../../shared/context/auth-context";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 
 import {
   VALIDATOR_MINLENGTH,
@@ -28,6 +29,10 @@ const NewPost = () => {
         value: "",
         isValid: false,
       },
+      image: {
+        value: null,
+        isValid: false,
+      },
     },
     false
   );
@@ -37,17 +42,15 @@ const NewPost = () => {
   const postSubmitHandler = async (event) => {
     event.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("title", formState.inputs.title.value);
+      formData.append("content", formState.inputs.content.value);
+      formData.append("creator", auth.userId);
+      formData.append("image", formState.inputs.image.value);
       await sendRequest(
-        "http://localhost:5001/api/feeds/post",
+        `${process.env.REACT_APP_BACKEND_URL}/feeds/post`,
         "POST",
-        JSON.stringify({
-          title: formState.inputs.title.value,
-          content: formState.inputs.content.value,
-          creator: auth.userId,
-        }),
-        {
-          "Content-Type": "application/json",
-        }
+        formData
       );
       console.log(formState);
       history.push("/");
@@ -62,6 +65,7 @@ const NewPost = () => {
       {isLoading && <LoadingSpinner asOverlay />}
 
       <form className="post-form" onSubmit={postSubmitHandler}>
+        {isLoading && <LoadingSpinner asOverlay />}
         <Input
           id="title"
           element="input"
@@ -70,6 +74,11 @@ const NewPost = () => {
           validators={[VALIDATOR_REQUIRE()]}
           errorText="Please enter a valid title"
           onInput={inputHandler}
+        />
+        <ImageUpload
+          id="image"
+          onInput={inputHandler}
+          errorText="Please provide an image."
         />
         <Input
           id="content"

@@ -15,7 +15,6 @@ import MainNavigation from "./shared/components/Navigation/MainNavigation";
 import SingleUser from "./users/pages/SingleUser";
 import Auth from "./users/pages/Auth";
 import MyFeeds from "./feeds/pages/MyFeeds";
-import Card from "./shared/components/UIElements/Card";
 
 import { AuthContext } from "./shared/context/auth-context";
 

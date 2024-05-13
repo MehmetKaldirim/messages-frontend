@@ -13,6 +13,7 @@ import {
 import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook.js";
 import { AuthContext } from "../../shared/context/auth-context";
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import "./Auth.css";
 
 const Auth = () => {
@@ -40,6 +41,7 @@ const Auth = () => {
         {
           ...formState.inputs,
           name: undefined,
+          image: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -49,6 +51,10 @@ const Auth = () => {
           ...formState.inputs,
           name: {
             value: "",
+            isValid: false,
+          },
+          image: {
+            value: null,
             isValid: false,
           },
         },
@@ -81,17 +87,15 @@ const Auth = () => {
       }
     } else {
       try {
+        const formData = new FormData();
+        formData.append("email", formState.inputs.email.value);
+        formData.append("name", formState.inputs.name.value);
+        formData.append("password", formState.inputs.password.value);
+        formData.append("image", formState.inputs.image.value);
         const responseData = await sendRequest(
           `${process.env.REACT_APP_BACKEND_URL}/users/signup`,
           "POST",
-          JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          }),
-          {
-            "Content-Type": "application/json",
-          }
+          formData
         );
 
         auth.login(responseData.user.id);
@@ -120,6 +124,15 @@ const Auth = () => {
               onInput={inputHandler}
             />
           )}
+          {!isLoginMode && (
+            <ImageUpload
+              center
+              id="image"
+              onInput={inputHandler}
+              errorText="Please provide an image"
+            />
+          )}
+
           <Input
             element="input"
             id="email"

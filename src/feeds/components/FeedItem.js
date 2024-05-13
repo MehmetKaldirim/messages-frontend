@@ -65,7 +65,10 @@ const FeedItem = (props) => {
           {props.date}
         </h2>
         <div className="single-post__image">
-          <Image contain imageUrl={props.image} />
+          <Image
+            contain
+            imageUrl={`${process.env.REACT_APP_ASSET_URL}${props.image}`}
+          />
         </div>
         <p>{props.content}</p>
         <div className="post-item__action">

@@ -1,41 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useParams, useHistory } from "react-router-dom";
 
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
-import { useForm } from "../../shared/hooks/form-hook";
 import {
-  VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
+  VALIDATOR_MINLENGTH,
 } from "../../shared/util/validators";
+import { useForm } from "../../shared/hooks/form-hook";
+import Card from "../../shared/components/UIElements/Card";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import { AuthContext } from "../../shared/context/auth-context";
 
 import "./PostForm.css";
 
-const FEEDS = [
-  {
-    id: "f1",
-    title: "First feed",
-    image:
-      "https://images.pexels.com/photos/839011/pexels-photo-839011.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    content: "Some content",
-    author: "Max Schwarz",
-    authorId: "u1",
-    date: "23 May 2023",
-  },
-  {
-    id: "f2",
-    title: "Another feeds",
-    image: "https://avatars.githubusercontent.com/u/45769545?v=4",
-    content: "Some content",
-    author: "Math Mathias",
-    authorId: "u2",
-    date: "28 May 2023",
-  },
-];
-
 const UpdatePost = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const auth = useContext(AuthContext);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [loadedPost, setLoadedPost] = useState();
   const postId = useParams().postId;
+  const history = useHistory();
 
   const [formState, inputHandler, setFormData] = useForm(
     {
@@ -51,35 +37,56 @@ const UpdatePost = () => {
     false
   );
 
-  const identifiedPost = FEEDS.find((p) => p.id === postId);
-  console.log("here identifiedPost=  " + identifiedPost.title);
-
   useEffect(() => {
-    setFormData(
-      {
-        title: {
-          value: identifiedPost.title,
-          isValid: true,
-        },
-        content: {
-          value: identifiedPost.content,
-          isValid: true,
-        },
-      },
-      true
-    );
-    setIsLoading(false);
-  }, [setFormData, identifiedPost]);
+    const fetchPost = async () => {
+      try {
+        const responseData = await sendRequest(
+          `http://localhost:5001/api/feeds/post/${postId}`
+        );
+        setLoadedPost(responseData.post);
+        setFormData(
+          {
+            title: {
+              value: responseData.post.title,
+              isValid: true,
+            },
+            content: {
+              value: responseData.place.content,
+              isValid: true,
+            },
+          },
+          true
+        );
+      } catch (err) {}
+    };
+    fetchPost();
+  }, [sendRequest, postId, setFormData]);
 
-  const postUpdateSubmitHandler = (event) => {
+  const postUpdateSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log(formState.inputs);
+
+    try {
+      await sendRequest(
+        `http://localhost:5001/api/feeds/${postId}`,
+        "PATCH",
+        JSON.stringify({
+          title: formState.inputs.title.value,
+          content: formState.inputs.content.value,
+        }),
+        {
+          "Content-Type": "application/json",
+        }
+      );
+      history.push("/" + auth.userId + "/posts");
+    } catch (err) {}
   };
 
-  if (!identifiedPost) {
+  if (!loadedPost && !error) {
     return (
       <div className="center">
-        <h2>Could not find place!</h2>
+        <Card>
+          <h2>Could not find post!</h2>
+        </Card>
       </div>
     );
   }
@@ -87,38 +94,43 @@ const UpdatePost = () => {
   if (isLoading) {
     return (
       <div className="center">
-        <h2>Loading...</h2>
+        <LoadingSpinner />
       </div>
     );
   }
+
   return (
-    <form className="post-form" onSubmit={postUpdateSubmitHandler}>
-      <Input
-        id="title"
-        element="input"
-        type="text"
-        label="Title"
-        validators={[VALIDATOR_REQUIRE()]}
-        errorText="Please enter a valid title"
-        onInput={inputHandler}
-        initialValue={formState.inputs.title.value}
-        initialValid={formState.inputs.title.isValid}
-      />
-      <Input
-        id="content"
-        element="textarea"
-        type="text"
-        label="Content"
-        validators={[VALIDATOR_MINLENGTH(5)]}
-        errorText="Please enter a valid conten , at least five character"
-        onInput={inputHandler}
-        initialValue={formState.inputs.content.value}
-        initialValid={formState.inputs.content.isValid}
-      />
-      <Button type="submit" disabled={!formState.isValid}>
-        UPDATE POST
-      </Button>
-    </form>
+    <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {!isLoading && loadedPost && (
+        <form className="post-form" onSubmit={postUpdateSubmitHandler}>
+          <Input
+            id="title"
+            element="input"
+            type="text"
+            label="Title"
+            validators={[VALIDATOR_REQUIRE()]}
+            errorText="Please enter a valid title."
+            onInput={inputHandler}
+            initialValue={loadedPost.title}
+            initialValid={true}
+          />
+          <Input
+            id="content"
+            element="textarea"
+            label="Content"
+            validators={[VALIDATOR_MINLENGTH(5)]}
+            errorText="Please enter a valid description (min. 5 characters)."
+            onInput={inputHandler}
+            initialValue={loadedPost.content}
+            initialValid={true}
+          />
+          <Button type="submit" disabled={!formState.isValid}>
+            UPDATE POST
+          </Button>
+        </form>
+      )}
+    </React.Fragment>
   );
 };
 

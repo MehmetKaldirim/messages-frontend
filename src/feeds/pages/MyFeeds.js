@@ -55,5 +55,4 @@ const MyFeeds = () => {
     </>
   );
 };
-
 export default MyFeeds;
