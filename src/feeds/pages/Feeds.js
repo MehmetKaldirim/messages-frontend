@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 
 import FeedsList from "../components/FeedsList";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import Button from "../../shared/components/FormElements/Button";
+import Card from "../../shared/components/UIElements/Card";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 const FEEDS = [
   {
@@ -40,19 +44,45 @@ const Feeds = () => {
     const fetchFeeds = async () => {
       try {
         const responseData = await sendRequest(
-          process.env.REACT_APP_BACKEND_URL + "/posts"
+          `${process.env.REACT_APP_BACKEND_URL}/feeds/posts`
         );
-        setLoadedFeeds(responseData.feeds);
+        console.log(responseData);
+        setLoadedFeeds(responseData.posts);
       } catch (err) {}
     };
     fetchFeeds();
     if (!loadedFeeds) {
       setLoadedFeeds(FEEDS);
     }
-    console.log(loadedFeeds);
   }, [sendRequest]);
+  console.log(loadedFeeds);
 
-  return <>{!isLoading && loadedFeeds && <FeedsList items={loadedFeeds} />}</>;
+  const postDeletedHandler = (deletedPostId) => {
+    setLoadedFeeds((prevPosts) =>
+      prevPosts.filter((post) => post.id !== deletedPostId)
+    );
+  };
+  return (
+    <>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && loadedFeeds && (
+        <FeedsList items={loadedFeeds} onDeletePost={postDeletedHandler} />
+      )}
+      {!loadedFeeds && (
+        <div className="place-list center">
+          <Card>
+            <h2>No places found. Maybe create one?</h2>
+            <Button to="/feeds/new">Share Place</Button>
+          </Card>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default Feeds;

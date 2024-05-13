@@ -19,12 +19,13 @@ const FeedsList = (props) => {
         <FeedItem
           key={feed.id}
           id={feed.id}
-          image={feed.image}
+          image={feed.imageUrl}
           title={feed.title}
           content={feed.content}
-          author={feed.author}
-          authorId={feed.authorId}
-          date={feed.date}
+          author={feed.creator}
+          creatorId={feed.creator}
+          date={feed.createdAt}
+          onDelete={props.onDeletePost}
         />
       ))}
     </ul>

@@ -5,10 +5,15 @@ import Modal from "../../shared/components/UIElements/Modal";
 import Image from "../../shared/components/UIElements/Image";
 import Card from "../../shared/components/UIElements/Card";
 import Button from "../../shared/components/FormElements/Button";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 import "./FeedItem.css";
 const FeedItem = (props) => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const showDeleteWarningHandler = () => {
@@ -18,13 +23,19 @@ const FeedItem = (props) => {
     setShowConfirmModal(false);
   };
 
-  const confirmDeleteHandler = () => {
+  const confirmDeleteHandler = async () => {
     setShowConfirmModal(false);
-    console.log("delitiyor");
+    try {
+      await sendRequest(
+        `${process.env.REACT_APP_BACKEND_URL}/feeds/${props.id}`,
+        "DELETE"
+      );
+      props.onDelete(props.id);
+    } catch (err) {}
   };
-  //const date = new Date(props.).toLocaleDateString("en-US");
   return (
     <>
+      <ErrorModal error={error} onClear={clearError} />
       <Modal
         show={showConfirmModal}
         onCancel={cancelDeleteWarningHandler}
@@ -47,10 +58,10 @@ const FeedItem = (props) => {
         </p>
       </Modal>
       <Card className="single-post">
+        {isLoading && <LoadingSpinner asOverlay />}
         <h1>{props.title}</h1>
         <h2>
-          Created by{" "}
-          <Link to={`/feeds/users/${props.authorId}`}>{props.author} </Link> on{" "}
+          <Link to={`/feeds/users/${props.authorId}`}>{props.author} </Link>
           {props.date}
         </h2>
         <div className="single-post__image">
@@ -58,10 +69,10 @@ const FeedItem = (props) => {
         </div>
         <p>{props.content}</p>
         <div className="post-item__action">
-          {auth.isLoggedIn && (
+          {auth.userId === props.creatorId && (
             <Button to={`/feeds/posts/${props.id}`}>EDIT</Button>
           )}
-          {auth.isLoggedIn && (
+          {auth.userId === props.creatorId && (
             <Button danger onClick={showDeleteWarningHandler}>
               DELETE
             </Button>

@@ -4,32 +4,27 @@ import SingleUserItem from "../components/SingleUserItem";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { useHttpClient } from "../../shared/hooks/http-hook.js";
-import Card from "../../shared/components/UIElements/Card.js";
 
-const USERS = [
-  {
-    id: "u1",
-    name: "Max Schwarz",
-    image:
-      "https://images.pexels.com/photos/839011/pexels-photo-839011.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
-    email: "test@test.com",
-    countOfPosts: 3,
-  },
-  {
-    id: "u2",
-    name: "Math mathias",
-    image: "https://avatars.githubusercontent.com/u/45769545?v=4",
-    email: "test1@test.com",
-    countOfPosts: 3,
-  },
-];
-
-const Users = () => {
+const SingleUser = () => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
-  const userId = useParams().userId;
-  const identifiedUser = USERS.find((u) => u.id === userId);
-  console.log(identifiedUser.name);
 
+  const userId = useParams().userId;
+
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const responseData = await sendRequest(
+          process.env.REACT_APP_BACKEND_URL + "/users/" + userId
+        );
+
+        setUser(responseData.user);
+      } catch (err) {}
+    };
+    fetchUsers();
+  }, [sendRequest, userId]);
+  console.log("here is user" + user);
   return (
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
@@ -38,16 +33,17 @@ const Users = () => {
           <LoadingSpinner />
         </div>
       )}
-
-      <SingleUserItem
-        className="center"
-        key={identifiedUser.id}
-        id={identifiedUser.id}
-        image={identifiedUser.image}
-        name={identifiedUser.name}
-        countOfPosts={identifiedUser.countOfPosts}
-      />
+      {!isLoading && user && (
+        <SingleUserItem
+          className="center"
+          key={user.id}
+          id={user.id}
+          image={user.imageUrl}
+          name={user.name}
+          countOfPosts={user.posts.length}
+        />
+      )}
     </React.Fragment>
   );
 };
-export default Users;
+export default SingleUser;
