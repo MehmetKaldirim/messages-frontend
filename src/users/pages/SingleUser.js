@@ -12,6 +12,7 @@ const SingleUser = () => {
 
   const [user, setUser] = useState();
 
+  console.log("user id " + userId);
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -24,7 +25,9 @@ const SingleUser = () => {
     };
     fetchUsers();
   }, [sendRequest, userId]);
-  console.log("here is user" + user);
+  if (user) {
+    console.log("umage url " + user.imageUrl);
+  }
   return (
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
@@ -38,7 +41,7 @@ const SingleUser = () => {
           className="center"
           key={user.id}
           id={user.id}
-          image={user.imageUrl}
+          imageUrl={user.imageUrl}
           name={user.name}
           countOfPosts={user.posts.length}
         />

@@ -7,18 +7,19 @@ import "./UserItem.css";
 
 const UserItem = (props) => {
   return (
-    <div
+    <li
       className="user-item"
       style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        listStyle: "none",
       }}
     >
       <Card className="user-item__content">
         <Link to={`/feeds/${props.id}/posts`}>
           <div className="user-item__image">
-            <Avatar image={`${props.image}`} alt={props.name} />
+            <Avatar
+              image={`${process.env.REACT_APP_ASSET_URL}${props.imageUrl}`}
+              alt={props.name}
+            />
           </div>
           <div className="user-item__info">
             <h2>{props.name}</h2>
@@ -28,7 +29,7 @@ const UserItem = (props) => {
           </div>
         </Link>
       </Card>
-    </div>
+    </li>
   );
 };
 

@@ -43,9 +43,9 @@ const Feeds = () => {
         <FeedsList items={loadedFeeds} onDeletePost={postDeletedHandler} />
       )}
       {!loadedFeeds && (
-        <div className="place-list center">
+        <div className="post-list center">
           <Card>
-            <h2>No places found. Maybe create one?</h2>
+            <h2>No posts found. Maybe create one?</h2>
             <Button to="/feeds/new">Share Place</Button>
           </Card>
         </div>

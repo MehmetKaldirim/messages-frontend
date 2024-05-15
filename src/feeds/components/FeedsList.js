@@ -2,14 +2,18 @@ import React from "react";
 
 import FeedItem from "./FeedItem";
 import Card from "../../shared/components/UIElements/Card";
+import Button from "../../shared/components/FormElements/Button";
 import "./FeedsList.css";
 const FeedsList = (props) => {
   if (props.items.length === 0 || !props.items) {
-    console.log("here" + props.items);
+    console.log("here no items" + props.items);
     return (
-      <Card className="center">
-        <h2>No feeds found</h2>
-      </Card>
+      <div className="post-list center">
+        <Card>
+          <h2>No post found. Maybe create one?</h2>
+          <Button to="/feeds/new">Share Post</Button>
+        </Card>
+      </div>
     );
   }
 

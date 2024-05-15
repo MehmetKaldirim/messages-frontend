@@ -50,9 +50,11 @@ const NewPost = () => {
       await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/feeds/post`,
         "POST",
-        formData
+        formData,
+        {
+          Authorization: "Bearer " + auth.token,
+        }
       );
-      console.log(formState);
       history.push("/");
     } catch (err) {
       console.log(err);

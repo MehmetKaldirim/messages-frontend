@@ -28,7 +28,11 @@ const FeedItem = (props) => {
     try {
       await sendRequest(
         `${process.env.REACT_APP_BACKEND_URL}/feeds/${props.id}`,
-        "DELETE"
+        "DELETE",
+        null,
+        {
+          Authorization: "Bearer " + auth.token,
+        }
       );
       props.onDelete(props.id);
     } catch (err) {}
@@ -61,7 +65,7 @@ const FeedItem = (props) => {
         {isLoading && <LoadingSpinner asOverlay />}
         <h1>{props.title}</h1>
         <h2>
-          <Link to={`/feeds/users/${props.authorId}`}>{props.author} </Link>
+          <Link to={`/feeds/users/${props.creatorId}`}>{props.author} </Link>
           {props.date}
         </h2>
         <div className="single-post__image">
