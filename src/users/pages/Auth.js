@@ -100,7 +100,7 @@ const Auth = () => {
         );
 
         auth.login(responseData.userId, responseData.token);
-        console.log("token" + responseData.token);
+        console.log("token signup" + responseData.token);
       } catch (err) {
         console.log(err);
       }
